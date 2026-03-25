@@ -11,3 +11,15 @@
  * All of the subsequent problems in this homework can be solved with LATERAL JOINs
  * (or slightly less conveniently with subqueries).
  */
+SELECT first_name, last_name, title, rental_date
+FROM customer
+JOIN LATERAL (
+    SELECT title, rental_date
+    FROM rental
+    JOIN inventory USING (inventory_id)
+    JOIN film USING (film_id)
+    WHERE rental.customer_id = customer.customer_id
+    ORDER BY rental_date DESC
+    LIMIT 1
+) AS latest ON true
+ORDER BY last_name, first_name;
